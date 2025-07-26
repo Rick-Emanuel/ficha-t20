@@ -1,7 +1,9 @@
 {
+  "manifest_version": 1,
   "id": "ficha-t20-tormenta20",
   "name": "Ficha T20 - Tormenta20",
   "version": "1.0.0",
+  "author": "rick-emanuel",
   "url": "https://rick-emanuel.github.io/ficha-t20/index.html",
   "icon": "",
   "sidebar": true,
