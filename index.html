@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha T20 - Tormenta20</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --player1: #3498db;
+            --player2: #e74c3c;
+            --player3: #2ecc71;
+            --player4: #f39c12;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            color: var(--light);
+            padding: 10px;
+            min-height: 100vh;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        .header {
+            background: var(--primary);
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .character-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .character-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .character-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .player-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--player1);
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--dark);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 5px;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.85rem;
+        }
+        
+        .tab-btn.active {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--secondary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .tab-btn.active::after {
+            transform: scaleX(1);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 15px;
+            min-height: 400px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .status-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #bbb;
+        }
+        
+        .status-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .status-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .status-btn:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+        
+        .list-item {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .list-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .list-name {
+            flex-grow: 1;
+            font-weight: 500;
+        }
+        
+        .list-value {
+            font-weight: bold;
+            margin: 0 10px;
+            color: var(--secondary);
+        }
+        
+        .roll-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .roll-btn:hover {
+            background: #27ae60;
+            transform: scale(1.1);
+        }
+        
+        .attack-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .attack-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .attack-dice {
+            margin: 0 10px;
+            color: var(--warning);
+            font-size: 0.9rem;
+        }
+        
+        .attack-actions button {
+            margin-left: 5px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--secondary);
+            border: 1px dashed var(--secondary);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .add-btn:hover {
+            background: rgba(52, 152, 219, 0.3);
+        }
+        
+        .import-section {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .import-btn {
+            background: var(--warning);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .import-btn:hover {
+            background: #e67e22;
+            transform: translateY(-3px);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .dice-result {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--dark);
+            border: 3px solid var(--secondary);
+            border-radius: 12px;
+            padding: 30px;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        
+        .dice-value {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--success);
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+        
+        .dice-label {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .close-result {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+        
+        /* Área de notificações */
+        .notification-area {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .notification {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--player1);
+        }
+        
+        .notification-icon {
+            font-size: 1.2rem;
+        }
+        
+        .notification-success .notification-icon {
+            color: var(--success);
+        }
+        
+        .notification-danger .notification-icon {
+            color: var(--danger);
+        }
+        
+        .notification-info .notification-icon {
+            color: var(--secondary);
+        }
+        
+        .notification-warning .notification-icon {
+            color: var(--warning);
+        }
+        
+        .player1-notification {
+            border-left-color: var(--player1);
+        }
+        
+        .player2-notification {
+            border-left-color: var(--player2);
+        }
+        
+        .player3-notification {
+            border-left-color: var(--player3);
+        }
+        
+        .player4-notification {
+            border-left-color: var(--player4);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        /* Player colors */
+        .player1 { background: var(--player1); }
+        .player2 { background: var(--player2); }
+        .player3 { background: var(--player3); }
+        .player4 { background: var(--player4); }
+        
+        @media (max-width: 480px) {
+            .status-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .tab-btn {
+                min-width: 70px;
+                padding: 10px 3px;
+                font-size: 0.75rem;
+            }
+            
+            .status-card {
+                padding: 10px;
+            }
+            
+            .status-value {
+                font-size: 1.5rem;
+            }
+            
+            .character-name {
+                max-width: 100px;
+            }
+            
+            .notification {
+                max-width: 250px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="character-info">
+                <div class="character-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="character-name" id="character-name">Guerreiro</div>
+            </div>
+            <h1>Ficha T20</h1>
+            <div class="player-indicator player1" id="player-indicator"></div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="status">Status</button>
+            <button class="tab-btn" data-tab="atributos">Atributos</button>
+            <button class="tab-btn" data-tab="pericias">Perícias</button>
+            <button class="tab-btn" data-tab="ataques">Ataques</button>
+            <button class="tab-btn" data-tab="poderes">Poderes</button>
+            <button class="tab-btn" data-tab="itens">Itens</button>
+            <button class="tab-btn" data-tab="magias">Magias</button>
+        </div>
+        
+        <!-- Aba Status -->
+        <div id="status" class="tab-content active">
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-label">Pontos de Vida</div>
+                    <div class="status-value" id="pv-value">50</div>
+                    <button class="status-btn" data-target="pv">+/-</button>
+                </div>
+                
+                <div class="status-card">
+                    <div class="status-label">Pontos de Mana</div>
+                    <div class="status-value" id="pm-value">30</div>
+                    <button class="status-btn" data-target="pm">+/-</button>
+                </div>
+                
+                <div class="status-card">
+                    <div class="status-label">Defesa</div>
+                    <div class="status-value" id="defesa-value">18</div>
+                    <button class="status-btn" data-target="defesa">+/-</button>
+                </div>
+            </div>
+            
+            <div class="import-section">
+                <p>Importe sua ficha de um arquivo TXT formatado</p>
+                <button class="import-btn">
+                    <i class="fas fa-file-import"></i> Importar Ficha
+                </button>
+                <input type="file" id="file-import" class="file-input" accept=".txt">
+            </div>
+        </div>
+        
+        <!-- Aba Atributos -->
+        <div id="atributos" class="tab-content">
+            <div class="list-item">
+                <div class="list-name">Força</div>
+                <div class="list-value">+3</div>
+                <button class="roll-btn" data-roll="3" data-label="Força">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Destreza</div>
+                <div class="list-value">+2</div>
+                <button class="roll-btn" data-roll="2" data-label="Destreza">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Constituição</div>
+                <div class="list-value">+4</div>
+                <button class="roll-btn" data-roll="4" data-label="Constituição">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Inteligência</div>
+                <div class="list-value">+1</div>
+                <button class="roll-btn" data-roll="1" data-label="Inteligência">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Sabedoria</div>
+                <div class="list-value">+2</div>
+                <button class="roll-btn" data-roll="2" data-label="Sabedoria">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Carisma</div>
+                <div class="list-value">+0</div>
+                <button class="roll-btn" data-roll="0" data-label="Carisma">D20</button>
+            </div>
+        </div>
+        
+        <!-- Aba Perícias -->
+        <div id="pericias" class="tab-content">
+            <div class="list-item">
+                <div class="list-name">Acrobacia</div>
+                <div class="list-value">+5</div>
+                <button class="roll-btn" data-roll="5" data-label="Acrobacia">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Atletismo</div>
+                <div class="list-value">+7</div>
+                <button class="roll-btn" data-roll="7" data-label="Atletismo">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Furtividade</div>
+                <div class="list-value">+6</div>
+                <button class="roll-btn" data-roll="6" data-label="Furtividade">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Percepção</div>
+                <div class="list-value">+4</div>
+                <button class="roll-btn" data-roll="4" data-label="Percepção">D20</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Sobrevivência</div>
+                <div class="list-value">+3</div>
+                <button class="roll-btn" data-roll="3" data-label="Sobrevivência">D20</button>
+            </div>
+            <button class="add-btn">+ Adicionar Perícia</button>
+        </div>
+        
+        <!-- Aba Ataques -->
+        <div id="ataques" class="tab-content">
+            <div class="attack-row">
+                <div class="attack-name">Espada Longa</div>
+                <div class="attack-dice">1d20+7 / 1d12+3</div>
+                <div class="attack-actions">
+                    <button class="btn btn-primary roll-btn" data-roll="7" data-label="Espada Longa (Ataque)">A</button>
+                    <button class="btn btn-danger roll-btn" data-roll="3" data-dice="12" data-label="Espada Longa (Dano)">D</button>
+                    <button class="btn btn-warning">Editar</button>
+                </div>
+            </div>
+            
+            <div class="attack-row">
+                <div class="attack-name">Arco Curto</div>
+                <div class="attack-dice">1d20+5 / 1d6+2</div>
+                <div class="attack-actions">
+                    <button class="btn btn-primary roll-btn" data-roll="5" data-label="Arco Curto (Ataque)">A</button>
+                    <button class="btn btn-danger roll-btn" data-roll="2" data-dice="6" data-label="Arco Curto (Dano)">D</button>
+                    <button class="btn btn-warning">Editar</button>
+                </div>
+            </div>
+            
+            <button class="add-btn">+ Adicionar Ataque</button>
+        </div>
+        
+        <!-- Aba Poderes -->
+        <div id="poderes" class="tab-content">
+            <div class="list-item">
+                <div class="list-name">Ataque Poderoso</div>
+                <div class="list-value">+5 dano</div>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Esquiva</div>
+                <div class="list-value">+2 Defesa</div>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Crítico Aperfeiçoado</div>
+                <div class="list-value">19-20</div>
+            </div>
+            <button class="add-btn">+ Adicionar Poder</button>
+        </div>
+        
+        <!-- Aba Itens -->
+        <div id="itens" class="tab-content">
+            <div class="list-item">
+                <div class="list-name">Espada Longa</div>
+                <div class="list-value">+1 ataque</div>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Armadura de Couro</div>
+                <div class="list-value">+4 Defesa</div>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Poção de Cura</div>
+                <div class="list-value">2d8+3 PV</div>
+            </div>
+            <button class="add-btn">+ Adicionar Item</button>
+        </div>
+        
+        <!-- Aba Magias -->
+        <div id="magias" class="tab-content">
+            <div class="list-item">
+                <div class="list-name">Bola de Fogo</div>
+                <div class="list-value">3d6 fogo</div>
+                <button class="roll-btn" data-roll="0" data-dice="6" data-count="3" data-label="Bola de Fogo">Rolar</button>
+            </div>
+            <div class="list-item">
+                <div class="list-name">Cura</div>
+                <div class="list-value">2d8+3</div>
+                <button class="roll-btn" data-roll="3" data-dice="8" data-count="2" data-label="Cura">Rolar</button>
+            </div>
+            <button class="add-btn">+ Adicionar Magia</button>
+        </div>
+    </div>
+    
+    <div class="overlay"></div>
+    
+    <div class="dice-result">
+        <div class="dice-label" id="dice-label">Rolagem de Dados</div>
+        <div class="dice-value" id="dice-value">20</div>
+        <div id="dice-details">1d20 + 5 = 20</div>
+        <button class="close-result">Fechar</button>
+    </div>
+    
+    <!-- Área de notificações -->
+    <div id="notification-area" class="notification-area"></div>
+    
+    <script>
+        // Variáveis globais
+        let characterName = "Guerreiro";
+        let playerColor = "player1";
+        let playerName = "Jogador";
+        let playerIndex = 1;
+        
+        // Inicialização da extensão no Owlbear Rodeo
+        if (window.OwlbearRodeo) {
+            window.OwlbearRodeo.extensions.once('load', ({ context, register }) => {
+                // Registrar a extensão
+                register({
+                    id: 'tormenta20-character-sheet',
+                    name: 'Ficha T20',
+                    color: '#3498db',
+                    icon: 'sword',
+                });
+                
+                // Definir o nome do jogador a partir do contexto
+                playerName = context.playerName;
+                playerIndex = context.playerIndex;
+                playerColor = `player${playerIndex + 1}`;
+                
+                // Atualizar indicador de jogador
+                document.getElementById('player-indicator').className = `player-indicator ${playerColor}`;
+                
+                // Ouvir mensagens de outros jogadores
+                window.OwlbearRodeo.extensions.onMessage((message) => {
+                    if (message.type === 'notification') {
+                        showNotification(
+                            `${message.characterName} (${message.playerName}) ${message.action}`,
+                            "info",
+                            message.details,
+                            message.color
+                        );
+                    }
+                });
+            });
+        }
+        
+        // Gerenciamento de abas
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove classe ativa de todas as abas
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Adiciona classe ativa na aba selecionada
+                btn.classList.add('active');
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Ajuste de status (PV, PM, Defesa)
+        const statusBtns = document.querySelectorAll('.status-btn');
+        statusBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.getAttribute('data-target');
+                const currentValue = parseInt(document.getElementById(`${target}-value`).textContent);
+                const adjustment = prompt(`Digite o ajuste para ${target.toUpperCase()} (positivo ou negativo):`, '0');
+                
+                if (adjustment !== null) {
+                    const adjustmentValue = parseInt(adjustment) || 0;
+                    const newValue = Math.max(0, currentValue + adjustmentValue);
+                    document.getElementById(`${target}-value`).textContent = newValue;
+                    
+                    // Mostrar notificação
+                    let action = "";
+                    if (adjustmentValue > 0) action = "aumentou";
+                    else if (adjustmentValue < 0) action = "reduziu";
+                    else action = "ajustou";
+                    
+                    const notificationDetails = `${target.toUpperCase()}: ${currentValue} → ${newValue}`;
+                    
+                    // Notificação local
+                    showNotification(
+                        `${characterName} ${action} ${target.toUpperCase()} em ${Math.abs(adjustmentValue)}`,
+                        "info",
+                        notificationDetails,
+                        playerColor
+                    );
+                    
+                    // Enviar notificação para outros jogadores
+                    sendNotification(
+                        `${action} ${target.toUpperCase()} em ${Math.abs(adjustmentValue)}`,
+                        notificationDetails
+                    );
+                }
+            });
+        });
+        
+        // Rolagem de dados
+        const rollBtns = document.querySelectorAll('.roll-btn');
+        const diceResult = document.querySelector('.dice-result');
+        const diceValue = document.getElementById('dice-value');
+        const diceLabel = document.getElementById('dice-label');
+        const diceDetails = document.getElementById('dice-details');
+        const overlay = document.querySelector('.overlay');
+        const closeResult = document.querySelector('.close-result');
+        
+        rollBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const bonus = parseInt(btn.getAttribute('data-roll')) || 0;
+                const dice = parseInt(btn.getAttribute('data-dice')) || 20;
+                const count = parseInt(btn.getAttribute('data-count')) || 1;
+                const label = btn.getAttribute('data-label') || 'Rolagem';
+                
+                // Rolagem de dados
+                let total = 0;
+                let rolls = [];
+                
+                for (let i = 0; i < count; i++) {
+                    const roll = Math.floor(Math.random() * dice) + 1;
+                    rolls.push(roll);
+                    total += roll;
+                }
+                
+                total += bonus;
+                
+                // Exibir resultado
+                diceLabel.textContent = label;
+                diceValue.textContent = total;
+                
+                // Detalhes da rolagem
+                let details = '';
+                if (count > 1) {
+                    details = `${count}d${dice}: ${rolls.join(' + ')}`;
+                    if (bonus !== 0) {
+                        details += ` + ${bonus} = ${total}`;
+                    } else {
+                        details += ` = ${total}`;
+                    }
+                } else {
+                    details = `1d20 + ${bonus} = ${rolls[0]} + ${bonus} = ${total}`;
+                }
+                
+                diceDetails.textContent = details;
+                
+                // Mostrar overlay e resultado
+                overlay.style.display = 'block';
+                diceResult.style.display = 'block';
+                
+                // Notificação local
+                showNotification(
+                    `${characterName} rolou ${label}`,
+                    "success",
+                    `Resultado: ${total} (${details})`,
+                    playerColor
+                );
+                
+                // Enviar notificação para outros jogadores
+                sendNotification(
+                    `rolou ${label}`,
+                    `Resultado: ${total}`
+                );
+            });
+        });
+        
+        // Fechar resultado
+        closeResult.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            diceResult.style.display = 'none';
+        });
+        
+        overlay.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            diceResult.style.display = 'none';
+        });
+        
+        // Importação de arquivo
+        const importBtn = document.querySelector('.import-btn');
+        const fileInput = document.getElementById('file-import');
+        
+        importBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const content = event.target.result;
+                importCharacterData(content);
+                
+                // Notificação local
+                showNotification(
+                    "Ficha importada com sucesso!",
+                    "success",
+                    `Personagem: ${characterName}`,
+                    playerColor
+                );
+                
+                // Enviar notificação para outros jogadores
+                sendNotification(
+                    "importou uma ficha",
+                    `Personagem: ${characterName}`
+                );
+            };
+            reader.readAsText(file);
+        });
+        
+        // Importação de dados
+        function importCharacterData(content) {
+            const sections = content.split('\n\n');
+            
+            sections.forEach(section => {
+                const [header, ...lines] = section.split('\n');
+                const sectionName = header.replace('[', '').replace(']', '').trim();
+                
+                switch(sectionName) {
+                    case 'Personagem':
+                        lines.forEach(line => {
+                            if (line.startsWith('Nome:')) {
+                                characterName = line.split(':')[1].trim();
+                                document.getElementById('character-name').textContent = characterName;
+                            }
+                            if (line.startsWith('Cor:')) {
+                                const color = line.split(':')[1].trim();
+                                playerColor = color;
+                                document.getElementById('player-indicator').className = `player-indicator ${color}`;
+                            }
+                        });
+                        break;
+                        
+                    case 'Status':
+                        lines.forEach(line => {
+                            const [key, value] = line.split(':').map(item => item.trim());
+                            if (key && value) {
+                                const elementId = `${key.toLowerCase()}-value`;
+                                if (document.getElementById(elementId)) {
+                                    document.getElementById(elementId).textContent = value;
+                                }
+                            }
+                        });
+                        break;
+                        
+                    case 'Atributos':
+                        // Implementação similar para outras seções
+                        break;
+                }
+            });
+        }
+        
+        // Botões de adicionar
+        const addBtns = document.querySelectorAll('.add-btn');
+        addBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.closest('.tab-content').id;
+                showNotification(
+                    `Adicionar novo item`,
+                    "info",
+                    `Na aba: ${tabId}`,
+                    playerColor
+                );
+            });
+        });
+        
+        // Função para mostrar notificações
+        function showNotification(title, type, message = "", colorClass = "player1") {
+            const notificationArea = document.getElementById('notification-area');
+            const notification = document.createElement('div');
+            
+            // Ícone baseado no tipo
+            let icon = "fa-info-circle";
+            if (type === "success") icon = "fa-check-circle";
+            else if (type === "danger") icon = "fa-times-circle";
+            else if (type === "warning") icon = "fa-exclamation-circle";
+            
+            notification.className = `notification notification-${type} ${colorClass}-notification`;
+            notification.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <div>
+                    <div><strong>${title}</strong></div>
+                    <div>${message}</div>
+                </div>
+            `;
+            
+            notificationArea.appendChild(notification);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                notification.style.opacity = 0;
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+        
+        // Função para enviar notificações para outros jogadores
+        function sendNotification(action, details) {
+            if (window.OwlbearRodeo) {
+                window.OwlbearRodeo.extensions.sendMessage({
+                    type: 'notification',
+                    playerName: playerName,
+                    characterName: characterName,
+                    action: action,
+                    details: details,
+                    color: playerColor
+                });
+            }
+        }
+        
+        // Exemplo de notificação de boas-vindas
+        setTimeout(() => {
+            showNotification(
+                "Ficha Tormenta20 Carregada!",
+                "success",
+                "Bem-vindo ao sistema de RPG",
+                playerColor
+            );
+        }, 1000);
+    </script>
+</body>
+</html>
